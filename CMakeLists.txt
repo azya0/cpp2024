@@ -34,12 +34,3 @@ if(WIN32)
 endif()
 
 install(TARGETS gems)
-
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-# find_package(SFML 2.6.1 REQUIRED system window graphics)
-
-# add_executable(gems main.cpp source/board/board.cpp source/base_structions/base_structions.cpp source/algorithms/algorithms.cpp)
-# target_link_libraries(gems PRIVATE sfml-graphics sfml-window sfml-system)
-# target_compile_features(gems PRIVATE cxx_std_17)
-
-# install(TARGETS gems)

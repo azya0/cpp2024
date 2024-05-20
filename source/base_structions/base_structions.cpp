@@ -10,7 +10,7 @@ std::map<Color, sf::Color> sfCOLOR = {
 	{Color::UNSELECTED, sf::Color(0, 0, 0)}
 };
 
-GEM::GEM() : BaseGEM() {
+GEM::GEM() : Base() {
 	color = Color::UNSELECTED;
 	draw = sf::CircleShape(size, 8);
 	draw.setFillColor(sf::Color::Black);

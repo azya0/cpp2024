@@ -1,6 +1,25 @@
 #include "board.h"
 #include <iostream>
 
+template<typename T>
+int find(std::vector<T*>* array, T* element) {
+    for (int index = 0; index < array->size(); index++) {
+        if ((*array)[index] == element)
+            return index;
+    }
+
+    return -1;
+}
+
+template<typename T>
+int find(std::vector<T> array, T element) {
+    for (int index = 0; index < array.size(); index++) {
+        if (array[index] == element)
+            return index;
+    }
+
+    return -1;
+}
 
 std::vector<GEM*> getNear(GEM** matrix, GEM* gem) {
     std::vector<GEM*> result;
@@ -24,26 +43,6 @@ std::vector<GEM*> getNear(GEM** matrix, GEM* gem) {
     }
 
     return result;
-}
-
-template<typename T>
-int find(std::vector<T*>* array, T* element) {
-    for (int index = 0; index < array->size(); index++) {
-        if ((*array)[index] == element)
-            return index;
-    }
-
-    return -1;
-}
-
-template<typename T>
-int find(std::vector<T> array, T element) {
-    for (int index = 0; index < array.size(); index++) {
-        if (array[index] == element)
-            return index;
-    }
-
-    return -1;
 }
 
 void recursionSearch(GEM* current, Color color, GEM** matrix, std::vector<GEM*>* visited) {
@@ -170,7 +169,6 @@ void Board::swap(GEM* first, GEM* second) {
     second->draw.setPosition(savePos);
 }
 
-
 void Board::swap(GEM* first, GEM* second, bool onlyNear) {
     if ((!isNear(first, second)) && onlyNear)
         return;
@@ -178,6 +176,41 @@ void Board::swap(GEM* first, GEM* second, bool onlyNear) {
     swap(first, second);
 }
 
+void Board::fall() {
+    if (!fallAnimation)
+        return;
+
+    sf::sleep(sf::milliseconds(500));
+    
+    for (int col = 0; col < size_y; col++) {
+        for (int row = size_x - 1; row >= 0; row--) {
+            auto* gem = &matrix[row][col];
+
+            if (gem->color != Color::UNSELECTED)
+                continue;
+
+            bool wasSwap = false;
+
+            for (int rowIndex = row - 1; rowIndex >= 0; rowIndex--) {
+                auto* gemToChange = &matrix[rowIndex][col];
+
+                if (gemToChange->color == Color::UNSELECTED)
+                    continue;
+
+                swap(gem, gemToChange);
+                check.push_back(gem);
+
+                wasSwap = true;
+                break;
+            }
+
+            if (!wasSwap)
+                break;
+        }
+    }
+
+    fallAnimation = false;
+}
 
 void Board::explosion(GEM* bomb) {
     auto placeholder = GEM();
@@ -206,7 +239,6 @@ void Board::explosion(GEM* bomb) {
         inGame.erase(inGame.begin() + index);
     }
 }
-
 
 void Board::randomColorChange(GEM* colorChanger) {
     auto placeholder = GEM();
@@ -240,7 +272,6 @@ void Board::randomColorChange(GEM* colorChanger) {
         check.push_back(gem);
     }
 }
-
 
 void Board::select(GEM* gem) {
     if (gem == NULL || gem->color == Color::UNSELECTED)
@@ -294,42 +325,6 @@ void Board::checkToDelete() {
     }
 
     check.clear();
-}
-
-void Board::fall() {
-    if (!fallAnimation)
-        return;
-
-    sf::sleep(sf::milliseconds(500));
-    
-    for (int col = 0; col < size_y; col++) {
-        for (int row = size_x - 1; row >= 0; row--) {
-            auto* gem = &matrix[row][col];
-
-            if (gem->color != Color::UNSELECTED)
-                continue;
-
-            bool wasSwap = false;
-
-            for (int rowIndex = row - 1; rowIndex >= 0; rowIndex--) {
-                auto* gemToChange = &matrix[rowIndex][col];
-
-                if (gemToChange->color == Color::UNSELECTED)
-                    continue;
-
-                swap(gem, gemToChange);
-                check.push_back(gem);
-
-                wasSwap = true;
-                break;
-            }
-
-            if (!wasSwap)
-                break;
-        }
-    }
-
-    fallAnimation = false;
 }
 
 void Board::render(sf::RenderWindow& window) {

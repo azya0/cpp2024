@@ -13,16 +13,16 @@ enum class Color {
     COLORCHANGER,
 };
 
-class BaseGEM {
+class Base {
 public:
     sf::CircleShape draw;
     static const int size = 20;
     int pos_x, pos_y;
 
-    virtual ~BaseGEM() {};
+    ~Base() {};
 };
 
-class GEM : public BaseGEM {
+class GEM : public Base {
 public:
     Color color;
 
@@ -30,21 +30,15 @@ public:
     GEM(Color _color);
     void selectColor(Color _color);
     void setPosition(int x, int y);
-
-    virtual ~GEM() {};
 };
 
 class Bomb : public GEM {
 public:
     Bomb();
-
-    virtual ~Bomb() {};
 };
 
 
 class ColorChanger: public GEM {
 public:
     ColorChanger();
-
-    virtual ~ColorChanger() {};
 };
